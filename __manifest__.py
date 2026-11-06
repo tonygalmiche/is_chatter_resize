@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     "name": "InfoSaône - Redimensionner ou masquer le chatter des formulaires",
-    "version": "18.0.1.0.0",
+    "version": "20.0.1.0.0",
     "author": "InfoSaône / Tony Galmiche",
     "category": "InfoSaône",
     "summary": "Redimensionner ou masquer le chatter, réglage mémorisé par utilisateur et par formulaire",
@@ -22,8 +22,7 @@
         "mail",
     ],
     "data": [
-        "security/ir.model.access.csv",
-        "security/is_chatter_resize_security.xml",
+        "security/ir.access.csv",
     ],
     "assets": {
         "web.assets_backend": [

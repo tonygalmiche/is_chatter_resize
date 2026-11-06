@@ -1,10 +1,8 @@
-/** @odoo-module **/
-
 import { browser } from "@web/core/browser/browser";
 import { patch } from "@web/core/utils/patch";
 import { useService } from "@web/core/utils/hooks";
 import { FormController } from "@web/views/form/form_controller";
-import { onMounted, onWillUnmount, useState } from "@odoo/owl";
+import { onMounted, onWillUnmount, proxy } from "@odoo/owl";
 
 /**
  * Redimensionner ou masquer le chatter des formulaires.
@@ -25,7 +23,7 @@ patch(FormController.prototype, {
 
         this.isChatterActif =
             !this.env.inDialog &&
-            !this.env.isSmall &&
+            !this.ui.isSmall &&
             !!this.archInfo?.xmlDoc?.querySelector("chatter");
         if (!this.isChatterActif) {
             return;
@@ -37,21 +35,22 @@ patch(FormController.prototype, {
 
         const reglage = this.isChatterService.get(this.isChatterModele, this.isChatterVueId);
         this.isChatterLargeur = reglage?.largeur || 0;
-        this.isChatterState = useState({ masque: !!reglage?.masque });
+        this.isChatterState = proxy({ masque: !!reglage?.masque });
 
         this._isChatterOnPointerDown = this._isChatterOnPointerDown.bind(this);
         this._isChatterOnPointerMove = this._isChatterOnPointerMove.bind(this);
         this._isChatterOnPointerUp = this._isChatterOnPointerUp.bind(this);
         this._isChatterOnDblClick = this._isChatterOnDblClick.bind(this);
 
+        // Owl 3 : this.rootRef est un signal.ref(), l'élément s'obtient par this.rootRef()
         onMounted(() => {
             this._isChatterAppliquer();
-            this.rootRef.el?.addEventListener("pointerdown", this._isChatterOnPointerDown);
-            this.rootRef.el?.addEventListener("dblclick", this._isChatterOnDblClick);
+            this.rootRef()?.addEventListener("pointerdown", this._isChatterOnPointerDown);
+            this.rootRef()?.addEventListener("dblclick", this._isChatterOnDblClick);
         });
         onWillUnmount(() => {
-            this.rootRef.el?.removeEventListener("pointerdown", this._isChatterOnPointerDown);
-            this.rootRef.el?.removeEventListener("dblclick", this._isChatterOnDblClick);
+            this.rootRef()?.removeEventListener("pointerdown", this._isChatterOnPointerDown);
+            this.rootRef()?.removeEventListener("dblclick", this._isChatterOnDblClick);
             this._isChatterFinDrag();
         });
     },
@@ -75,7 +74,7 @@ patch(FormController.prototype, {
      * Pose le réglage courant sur l'élément racine du formulaire
      */
     _isChatterAppliquer() {
-        const root = this.rootRef.el;
+        const root = this.rootRef();
         if (!root) {
             return;
         }
@@ -125,7 +124,7 @@ patch(FormController.prototype, {
         ev.stopPropagation();
         this._isChatterDrag = {
             droite: rect.right,
-            max: Math.max(rect.right - this.rootRef.el.getBoundingClientRect().left - FORMULAIRE_MIN, LARGEUR_MIN),
+            max: Math.max(rect.right - this.rootRef().getBoundingClientRect().left - FORMULAIRE_MIN, LARGEUR_MIN),
             largeurAvant: this.isChatterLargeur,
         };
         document.body.classList.add("is_chatter_resize_en_cours");

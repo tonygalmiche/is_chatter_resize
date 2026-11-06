@@ -6,11 +6,13 @@
     display: none !important;
 }
 
-// Le formulaire (.o_form_sheet_bg) est limité par Odoo à 1534 px et calé à gauche :
-// quand le chatter à droite est masqué ou redimensionné, il prend toute la place libre
+// Le formulaire (.o_form_sheet_bg) est limité par Odoo à 1400 px et calé à gauche :
+// quand le chatter à droite est masqué ou redimensionné, il prend toute la place libre.
+// « ~ » et non « + » : un <style> ajouté dans le <form> par un module client peut se
+// retrouver entre le formulaire et le chatter (ex. commandes de vente chez Jurabotec)
 [data-is-chatter-masque],
 [data-is-chatter-largeur] {
-    .o_form_sheet_bg:has(+ .o-mail-Form-chatter.o-aside) {
+    .o_form_sheet_bg:has(~ .o-mail-Form-chatter.o-aside) {
         max-width: none;
     }
 }
