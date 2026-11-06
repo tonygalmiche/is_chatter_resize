@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Bouton masquer / afficher le chatter, à droite de la barre du haut (à côté du pager) -->
+    <t t-inherit="web.FormView" t-inherit-mode="extension">
+        <xpath expr="//Layout" position="inside">
+            <t t-set-slot="control-panel-navigation-additional">
+                <button t-if="isChatterActif"
+                        type="button"
+                        class="btn btn-secondary o_is_chatter_resize_toggle ms-1"
+                        t-att-title="isChatterState.masque ? 'Afficher le chatter' : 'Masquer le chatter'"
+                        t-on-click="() => this.isChatterBasculer()">
+                    <i t-attf-class="fa {{ isChatterState.masque ? 'fa-comments-o' : 'fa-comments' }}"/>
+                </button>
+            </t>
+        </xpath>
+    </t>
+
+</templates>

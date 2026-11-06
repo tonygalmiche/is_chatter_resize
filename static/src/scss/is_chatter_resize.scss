@@ -1,0 +1,59 @@
+// Réglages posés par is_chatter_resize.js sur l'élément racine du formulaire :
+// - data-is-chatter-masque : chatter masqué (à droite ou en bas)
+// - data-is-chatter-largeur + --is-chatter-largeur : largeur du chatter à droite
+
+[data-is-chatter-masque] .o-mail-Form-chatter {
+    display: none !important;
+}
+
+// Le formulaire (.o_form_sheet_bg) est limité par Odoo à 1534 px et calé à gauche :
+// quand le chatter à droite est masqué ou redimensionné, il prend toute la place libre
+[data-is-chatter-masque],
+[data-is-chatter-largeur] {
+    .o_form_sheet_bg:has(+ .o-mail-Form-chatter.o-aside) {
+        max-width: none;
+    }
+}
+
+[data-is-chatter-largeur] .o-mail-Form-chatter.o-aside {
+    flex: 0 0 var(--is-chatter-largeur);
+    width: var(--is-chatter-largeur);
+    // Le formulaire garde toujours de la place si la fenêtre est réduite
+    max-width: calc(100% - 500px);
+}
+
+// Poignée sur le bord gauche du chatter à droite
+.o_form_view .o-mail-Form-chatter.o-aside {
+    position: relative;
+
+    &::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        width: 8px;
+        z-index: 10;
+        cursor: col-resize;
+        border-left: 2px solid transparent;
+        transition: border-color 0.15s ease;
+    }
+
+    &:hover::before {
+        border-left-color: $border-color;
+    }
+}
+
+// Pendant le redimensionnement
+body.is_chatter_resize_en_cours {
+    cursor: col-resize !important;
+    user-select: none;
+
+    * {
+        cursor: col-resize !important;
+    }
+
+    .o-mail-Form-chatter.o-aside::before {
+        border-left-color: $primary;
+    }
+}
